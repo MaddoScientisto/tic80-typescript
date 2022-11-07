@@ -9,6 +9,7 @@ var uglifyJS = require("uglify-js");
 var yesno = require("yesno");
 var commander_1 = require("commander");
 var chokidar = require("chokidar");
+var babel = require("@babel/core");
 var version = require("../package.json").version;
 var program = new commander_1.Command();
 program.version(version);
@@ -117,8 +118,13 @@ function build(_a) {
         child_process.execSync("tsc", { encoding: "utf-8" });
     }
     function makeGameFile() {
+        var _a, _b;
         console.log("Building game file...");
         var buildStr = fs.readFileSync(outFile, "utf8");
+        var babelOptions = {
+            presets: ["@babel/preset-env"]
+        };
+        buildStr = (_b = (_a = babel.transformSync(buildStr, babelOptions)) === null || _a === void 0 ? void 0 : _a.code) !== null && _b !== void 0 ? _b : buildStr;
         // Explicit strict mode breaks the global TIC scope
         buildStr = buildStr.replace('"use strict";', "");
         var result = uglifyJS.minify(buildStr, {

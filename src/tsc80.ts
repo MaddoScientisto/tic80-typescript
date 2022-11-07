@@ -9,6 +9,9 @@ import * as yesno from "yesno"
 import { Command } from "commander"
 import * as chokidar from "chokidar"
 
+import * as babel from "@babel/core";
+//import * as babelPreset from "@babel/preset-env"
+
 const version: string = require("../package.json").version
 
 const program = new Command()
@@ -150,6 +153,12 @@ function build({ run = false }): void {
   function makeGameFile(): void {
     console.log("Building game file...")
     let buildStr = fs.readFileSync(outFile, "utf8")
+
+    let babelOptions : babel.TransformOptions = {
+      presets: ["@babel/preset-env"]
+    }
+
+    buildStr = babel.transformSync(buildStr, babelOptions)?.code ?? buildStr
 
     // Explicit strict mode breaks the global TIC scope
     buildStr = buildStr.replace('"use strict";', "")
