@@ -122,7 +122,11 @@ function build(_a) {
         console.log("Building game file...");
         var buildStr = fs.readFileSync(outFile, "utf8");
         var babelOptions = {
-            presets: ["@babel/preset-env"]
+            presets: [["@babel/preset-env", {
+                targets: {
+                    ie: "11"
+                }
+            }]]
         };
         buildStr = (_b = (_a = babel.transformSync(buildStr, babelOptions)) === null || _a === void 0 ? void 0 : _a.code) !== null && _b !== void 0 ? _b : buildStr;
         // Explicit strict mode breaks the global TIC scope

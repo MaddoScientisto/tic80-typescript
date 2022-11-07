@@ -155,7 +155,12 @@ function build({ run = false }): void {
     let buildStr = fs.readFileSync(outFile, "utf8")
 
     let babelOptions : babel.TransformOptions = {
-      presets: ["@babel/preset-env"]
+      presets: ["@babel/preset-env", {
+        targets: {
+          ie: "10"
+        },
+        useBuiltIns: 'usage'
+      }]
     }
 
     buildStr = babel.transformSync(buildStr, babelOptions)?.code ?? buildStr
